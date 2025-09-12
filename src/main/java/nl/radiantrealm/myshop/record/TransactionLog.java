@@ -13,20 +13,13 @@ public record TransactionLog(int logID, long timestamp, TransactionType transact
 
     @Override
     public JsonObject toJson() throws IllegalStateException {
-        JsonObject result = new JsonObject();
-        result.addProperty("log_id", logID);
-        result.addProperty("timestamp", timestamp);
-        result.addProperty("transaction_type", transactionType.name());
-        result.addProperty("transaction_amount", transactionAmount);
-        result.addProperty("player_uuid", playerUUID.toString());
-
-        JsonObject materials = new JsonObject();
-
-        for (Map.Entry<Material, Integer> entry : this.materials.entrySet()) {
-            materials.addProperty(entry.getKey().name(), entry.getValue());
-        }
-
-        result.add("materials", materials);
-        return result;
+        JsonObject object = new JsonObject();
+        object.addProperty("log_id", logID);
+        object.addProperty("timestamp", timestamp);
+        object.addProperty("transaction_type", transactionType.name());
+        object.addProperty("transaction_amount", transactionAmount);
+        object.addProperty("player_uuid", playerUUID.toString());
+        object.add("materials", ShopProduct.parseMaterialJSON(materials));
+        return object;
     }
 }
