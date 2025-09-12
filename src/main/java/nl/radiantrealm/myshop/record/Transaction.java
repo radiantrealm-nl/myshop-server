@@ -21,7 +21,7 @@ public record Transaction(TransactionType transactionType, BigDecimal transactio
         return object;
     }
 
-    public TransactionLog generateTransactionLog() {
+    public TransactionLog createTransactionLog() {
         return new TransactionLog(
                 0,
                 System.currentTimeMillis(),
