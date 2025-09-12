@@ -2,6 +2,7 @@ package nl.radiantrealm.myshop;
 
 import nl.radiantrealm.library.http.client.CertificateLevel;
 import nl.radiantrealm.library.http.client.Client;
+import nl.radiantrealm.myshop.cache.SessionTokenCache;
 import nl.radiantrealm.myshop.cache.ShopCategoryCache;
 import nl.radiantrealm.myshop.cache.ShopMaterialCache;
 import nl.radiantrealm.myshop.cache.ShopProductCache;
@@ -9,6 +10,7 @@ import nl.radiantrealm.myshop.cache.ShopProductCache;
 public class Main {
     public static final Client client;
 
+    public static final SessionTokenCache sessionTokenCache = new SessionTokenCache();
     public static final ShopCategoryCache shopCategoryCache = new ShopCategoryCache();
     public static final ShopMaterialCache shopMaterialCache = new ShopMaterialCache();
     public static final ShopProductCache shopProductCache = new ShopProductCache();
