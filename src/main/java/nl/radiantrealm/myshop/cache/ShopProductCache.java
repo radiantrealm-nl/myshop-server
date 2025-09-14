@@ -1,5 +1,6 @@
 package nl.radiantrealm.myshop.cache;
 
+import com.google.gson.JsonObject;
 import nl.radiantrealm.library.cache.CacheRegistry;
 import nl.radiantrealm.library.utils.FormatUtils;
 import nl.radiantrealm.library.utils.JsonUtils;
@@ -19,6 +20,14 @@ public class ShopProductCache extends CacheRegistry<String, ShopProduct> {
         super(Duration.ofMinutes(15));
     }
 
+    private Map<String, Integer> parseMaterialMap(ResultSet rs) throws Exception {
+        JsonObject object = JsonUtils.getJsonObject(rs.getString("materials"));
+        return JsonUtils.getJsonMap(object, (key, value) -> new AbstractMap.SimpleEntry<>(
+                key,
+                value.getAsInt()
+        ));
+    }
+
     @Override
     protected ShopProduct load(String key) throws Exception {
         try (Connection connection = Database.getConnection()) {
@@ -35,7 +44,7 @@ public class ShopProductCache extends CacheRegistry<String, ShopProduct> {
                         rs.getString("product_name"),
                         FormatUtils.formatEnum(Material.class, rs, "product_icon"),
                         rs.getString("product_category"),
-                        ShopProduct.parseMaterialMap(JsonUtils.getJsonObject(rs.getString("materials")))
+                        parseMaterialMap(rs)
                 );
             }
 
@@ -67,7 +76,7 @@ public class ShopProductCache extends CacheRegistry<String, ShopProduct> {
                         rs.getString("product_name"),
                         FormatUtils.formatEnum(Material.class, rs, "product_icon"),
                         rs.getString("product_category"),
-                        ShopProduct.parseMaterialMap(JsonUtils.getJsonObject(rs.getString("materials")))
+                        parseMaterialMap(rs)
                 ));
             }
 
