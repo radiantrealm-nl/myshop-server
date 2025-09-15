@@ -20,10 +20,10 @@ public class ShopProductCache extends CacheRegistry<String, ShopProduct> {
         super(Duration.ofMinutes(15));
     }
 
-    private Map<String, Integer> parseMaterialMap(ResultSet rs) throws Exception {
+    private Map<Material, Integer> parseMaterialMap(ResultSet rs) throws Exception {
         JsonObject object = JsonUtils.getJsonObject(rs.getString("materials"));
         return JsonUtils.getJsonMap(object, (key, value) -> new AbstractMap.SimpleEntry<>(
-                key,
+                FormatUtils.formatEnum(Material.class, key),
                 value.getAsInt()
         ));
     }
