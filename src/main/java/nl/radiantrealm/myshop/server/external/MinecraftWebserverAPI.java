@@ -7,6 +7,8 @@ import nl.radiantrealm.library.utils.FormatUtils;
 import nl.radiantrealm.library.utils.Result;
 import nl.radiantrealm.myshop.Main;
 import nl.radiantrealm.myshop.cache.SessionTokenCache;
+import nl.radiantrealm.myshop.server.external.handler.PublicOrderCheckoutAPI;
+import nl.radiantrealm.myshop.server.external.handler.PublicProductAPI;
 
 import java.net.HttpCookie;
 import java.util.UUID;
@@ -16,6 +18,12 @@ public class MinecraftWebserverAPI extends ApplicationRouter {
 
     public MinecraftWebserverAPI() {
         super(69420);
+
+        PublicProductAPI publicProductAPI = new PublicProductAPI();
+
+        register("/products/", publicProductAPI);
+        register("/product/", publicProductAPI);
+        registerPublic("/checkout", new PublicOrderCheckoutAPI());
     }
 
     private void registerPublic(String path, PublicRequestHandler handler) {
