@@ -7,10 +7,10 @@ import nl.radiantrealm.myshop.cache.*;
 public class Main {
     public static final Client client;
 
+    public static final ProductCategoryCache productCategoryCache = new ProductCategoryCache();
     public static final ProductPriceCache productPriceCache = new ProductPriceCache();
     public static final ProductStockCache productStockCache = new ProductStockCache();
     public static final SessionTokenCache sessionTokenCache = new SessionTokenCache();
-    public static final ShopCategoryCache shopCategoryCache = new ShopCategoryCache();
     public static final ShopMaterialCache shopMaterialCache = new ShopMaterialCache();
     public static final ShopProductCache shopProductCache = new ShopProductCache();
 
