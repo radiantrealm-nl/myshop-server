@@ -18,54 +18,42 @@ public class PublicProductAPI implements RequestHandler {
         String[] url = request.getRequestURI().split("/");
 
         if (url.length < 5) {
-            request.sendStatusResponse(StatusCode.BAD_REQUEST, "Provide valid argument.");
+            request.sendStatusResponse(StatusCode.BAD_REQUEST, "Provide a valid argument.");
             return;
         }
 
-        String resource = url[4];
+        switch (url[3]) {
+            case "product" -> getProduct(request, url[4]);
+            case "products" -> getProducts(request, url[5]);
+            default -> request.sendStatusResponse(StatusCode.BAD_REQUEST);
+        }
+    }
 
-        if (resource == null) {
-            request.sendStatusResponse(StatusCode.BAD_REQUEST, "Provide a valid resource. Use 'product' or 'products'.");
+    private void getProduct(HttpRequest request, String identifier) throws Exception {
+        JsonObject object = JsonViewBuilderCache.productOverview.get(identifier);
+
+        if (object == null) {
+            request.sendStatusResponse(StatusCode.BAD_REQUEST, "Product not found.");
             return;
         }
 
-        String identifier = url[5];
+        request.sendResponse(StatusCode.OK, object);
+    }
 
-        if (identifier == null) {
-            request.sendStatusResponse(StatusCode.BAD_REQUEST, String.format("Provide a product identifier after '%s'.", resource));
+    private void getProducts(HttpRequest request, String identifier) throws Exception {
+        List<String> list = Main.productCategoryCache.get(identifier);
+
+        if (list == null) {
+            request.sendStatusResponse(StatusCode.NOT_FOUND, "Category not found.");
             return;
         }
 
-        switch (resource) {
-            case "product" -> {
-                JsonObject object = JsonViewBuilderCache.productOverview.get(identifier);
+        Map<String, JsonObject> map = JsonViewBuilderCache.productOverview.get(list);
 
-                if (object == null) {
-                    request.sendStatusResponse(StatusCode.NOT_FOUND, "Product not found.");
-                    return;
-                }
-
-                request.sendResponse(StatusCode.OK, object);
-            }
-
-            case "products" -> {
-                List<String> list = Main.productCategoryCache.get(url[4]);
-
-                if (list == null) {
-                    request.sendStatusResponse(StatusCode.NOT_FOUND, "Category not found.");
-                    return;
-                }
-
-                Map<String, JsonObject> map = JsonViewBuilderCache.productOverview.get(list);
-
-                JsonArray array = new JsonArray();
-                map.forEach((key, value) -> array.add(value));
-                JsonObject object = new JsonObject();
-                object.add("products", array);
-                request.sendResponse(StatusCode.OK, object);
-            }
-
-            default -> request.sendStatusResponse(StatusCode.BAD_REQUEST, "Provide a valid resource. Use 'product' or 'products'.");
-        }
+        JsonArray array = new JsonArray();
+        map.forEach((key, value) -> array.add(value));
+        JsonObject object = new JsonObject();
+        object.add("products", array);
+        request.sendResponse(StatusCode.OK, object);
     }
 }
